@@ -26,13 +26,39 @@ app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
+        console.log("senderID: " + event.sender);
+        
+        var req = {
+            method: 'GET',
+            uri: 'https://graph.facebook.com/v2.6/' + event.sender,
+            qs: {
+            fields: 'first_name,last_name,profile_pic',
+            access_token: this.token
+            },
+            json: true
+        }
+        request(req, function (err, res, body) {
+            /*if (err) return cb(err)
+            if (body.error) return cb(body.error)
+            cb(null, body)*/
+            if (err) return err;
+            if (body.error) return body.error;
+            if (event.message && event.message.text) {
+                if (!kittenMessage(event.sender.id, event.message.text)) {
+                    sendMessage(event.sender.id, {text: "Echo ( " + body.first_name + "): " + event.message.text});
+                }
+            } else if (event.postback) {
+                console.log("Postback received: " + JSON.stringify(event.postback));
+            }    
+        });
+        /*
         if (event.message && event.message.text) {
             if (!kittenMessage(event.sender.id, event.message.text)) {
                 sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
             }
         } else if (event.postback) {
             console.log("Postback received: " + JSON.stringify(event.postback));
-        }
+        }*/
     }
     res.sendStatus(200);
 });
