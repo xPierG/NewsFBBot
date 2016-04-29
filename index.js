@@ -38,27 +38,16 @@ app.post('/webhook', function (req, res) {
             json: true
         }
         request(req, function (err, res, body) {
-            /*if (err) return cb(err)
-            if (body.error) return cb(body.error)
-            cb(null, body)*/
             if (err) return err;
             if (body.error) return body.error;
             if (event.message && event.message.text) {
                 if (!kittenMessage(event.sender.id, event.message.text)) {
-                    sendMessage(event.sender.id, {text: "Echo ( " + body.first_name + "): " + event.message.text});
+                    sendMessage(event.sender.id, {text: "Ciao " + body.first_name + " - Echo: " + event.message.text});
                 }
             } else if (event.postback) {
                 console.log("Postback received: " + JSON.stringify(event.postback));
             }    
         });
-        /*
-        if (event.message && event.message.text) {
-            if (!kittenMessage(event.sender.id, event.message.text)) {
-                sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
-            }
-        } else if (event.postback) {
-            console.log("Postback received: " + JSON.stringify(event.postback));
-        }*/
     }
     res.sendStatus(200);
 });
