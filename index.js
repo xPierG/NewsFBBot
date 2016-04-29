@@ -26,11 +26,11 @@ app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
-        console.log("senderID: " + event.sender);
+        console.log("senderID: " + event.sender.id);
         
         var req = {
             method: 'GET',
-            uri: 'https://graph.facebook.com/v2.6/' + event.sender,
+            uri: 'https://graph.facebook.com/v2.6/' + event.sender.id,
             qs: {
             fields: 'first_name,last_name,profile_pic',
             access_token: this.token
